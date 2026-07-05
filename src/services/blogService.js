@@ -6,7 +6,8 @@ import {
     getDocs,  //Retrieves all documents from a collection.
     orderBy,  //We want the newest blogs first.
     query,  //Allows us to customize what we fetch.
-    serverTimestamp
+    serverTimestamp,
+    updateDoc
 } from "firebase/firestore";
 
 import { db } from "../firebase/config";
@@ -54,3 +55,9 @@ export const getBlogById = async (id) => {
         ...snapshot.data(),
     };
 };
+
+export const updateBlog = async (id, updatedBlog) => {
+    const docRef = doc(db, "blogs", id);
+
+    await updateDoc(docRef, updatedBlog);
+}

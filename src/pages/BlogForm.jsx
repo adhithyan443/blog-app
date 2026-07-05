@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-import { addBlog } from "../services/blogService";
+import { addBlog, getBlogById, updateBlog } from "../services/blogService";
 
 export default function BlogForm() {
 
@@ -14,7 +14,31 @@ export default function BlogForm() {
     //For edit
     const { id } = useParams();
     const isEditMode = Boolean(id);
-    console.log(isEditMode)
+
+
+
+    useEffect(() => {
+
+        if (!isEditMode) {
+            setTitle("");
+            setContent("");
+            return;
+        }
+
+        const fetchBlog = async () => {
+            try {
+                const blog = await getBlogById(id);
+
+                setTitle(blog.title);
+                setContent(blog.content);
+            } catch (error) {
+                console.error(error)
+            }
+        };
+
+        fetchBlog();
+
+    }, [id, isEditMode]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -27,7 +51,17 @@ export default function BlogForm() {
                 authorEmail: user.email,
             };
 
-            await addBlog(blog);
+            if (isEditMode) {
+                
+                await updateBlog(id, {
+                    title,
+                    content,
+                });
+
+            } else {
+                await addBlog(blog);
+            }
+
             navigate("/blogs")
 
         } catch (error) {
