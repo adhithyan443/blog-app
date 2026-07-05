@@ -6,6 +6,7 @@ import Login from "../pages/Login";
 import Register from "../pages/Register";
 import NotFound from "../pages/NotFound";
 import ProtectedRoute from "./ProtectedRoute";
+import Layout from "../components/layout/Layout";
 
 export default function AppRoutes() {
     return (
@@ -20,30 +21,23 @@ export default function AppRoutes() {
 
 
             {/*Protected routes*/}
-            <Route path="/blogs" element={
-                <ProtectedRoute>
-                    <BlogList />
-                </ProtectedRoute>
-            } />
-            <Route path="/blog/add" element={
-                <ProtectedRoute>
-                    <BlogForm />
-                </ProtectedRoute>
-            } />
-            <Route
-                path="/blogs/edit/:id"
-                element={
-                    <ProtectedRoute>
-                        <BlogForm />
-                    </ProtectedRoute>
-                }
-            />
 
-            <Route path="/blog/:id" element={
+            <Route element={
                 <ProtectedRoute>
-                    <BlogDetails />
-                </ProtectedRoute>} />
+                    <Layout />
+                </ProtectedRoute>
+            } >
 
+                <Route path="/blogs" element={<BlogList />} />
+                <Route path="/blog/add" element={<BlogForm />} />
+                <Route
+                    path="/blogs/edit/:id"
+                    element={<BlogForm />} />
+
+                <Route path="/blog/:id" element={<BlogDetails />} />
+
+            </Route>
+            
             <Route path="*" element={<NotFound />} />
 
         </Routes>

@@ -4,6 +4,7 @@ import { useAuth } from "../hooks/useAuth";
 
 
 
+
 export default function ProtectedRoute({ children }) {
     const { user, loading } = useAuth();
 
@@ -17,9 +18,12 @@ export default function ProtectedRoute({ children }) {
     }
 
     // If not logged in, redirect to login page
-    if (!user){
-        return <Navigate to = "/login" replace />;
+    if (!user) {
+        return <Navigate to="/login" replace />;
     }
 
-    return children; // User is authenticated, render the protected page
+    return <>
+       
+        {children}
+    </>; // User is authenticated, render the protected page
 }
