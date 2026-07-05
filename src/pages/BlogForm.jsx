@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { addBlog } from "../services/blogService";
 
@@ -10,6 +10,11 @@ export default function BlogForm() {
     const { user } = useAuth();
 
     const navigate = useNavigate();
+
+    //For edit
+    const { id } = useParams();
+    const isEditMode = Boolean(id);
+    console.log(isEditMode)
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -38,7 +43,7 @@ export default function BlogForm() {
     return (
         <div className="mx-auto max-w-4xl rounded-lg bg-white p-8 shadow-md">
             <h1 className="mb-8 text-3xl font-bold text-gray-800">
-                Add New Blog
+                {isEditMode ? "Edit Blog" : "Add Blog"}
             </h1>
 
             <form
@@ -99,7 +104,7 @@ export default function BlogForm() {
                         type="submit"
                         className="rounded-lg bg-violet-600 px-6 py-2 font-medium text-white transition hover:bg-violet-700"
                     >
-                        Publish Blog
+                        {isEditMode ? "Update Blog" : "Publish Blog"}
                     </button>
                 </div>
             </form>

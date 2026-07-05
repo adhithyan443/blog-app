@@ -1,12 +1,17 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { getBlogById } from "../services/blogService";
+import { useAuth } from "../hooks/useAuth";
 
 export default function BlogDetails() {
 
     const [blog, setBlog] = useState(null);
 
     const { id } = useParams();
+
+    const { user } = useAuth();
+
+    const isOwner = user?.uid === blog?.authorId;
 
     useEffect(() => {
 
@@ -20,7 +25,7 @@ export default function BlogDetails() {
                 console.log("Fetched Blog:", data);
 
                 setBlog(data);
-                
+
             } catch (error) {
                 console.log(error)
             }
@@ -65,6 +70,19 @@ export default function BlogDetails() {
                     {blog.content}
                 </p>
             </div>
+
+            {isOwner && (
+                <div className="mt-8 flex gap-4">
+                    <Link
+                        to={`/blogs/edit/${blog.id}`}
+                        
+                        className="rounded bg-blue-600 px-5 py-2 text-white transition hover:bg-blue-700"
+                    >
+                        Edit
+                    </Link>
+                </div>
+            )}
+
         </div>
     );
 }
