@@ -1,6 +1,7 @@
 import {
     addDoc,
     collection,
+    deleteDoc,
     doc,
     getDoc,
     getDocs,  //Retrieves all documents from a collection.
@@ -61,3 +62,10 @@ export const updateBlog = async (id, updatedBlog) => {
 
     await updateDoc(docRef, updatedBlog);
 }
+
+
+export const deleteBlog = async (id) =>{
+    const docRef = doc(db,"blogs" ,id);
+
+    await deleteDoc(docRef);
+};

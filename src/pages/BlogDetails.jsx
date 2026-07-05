@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import { getBlogById } from "../services/blogService";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { deleteBlog, getBlogById } from "../services/blogService";
 import { useAuth } from "../hooks/useAuth";
 
 export default function BlogDetails() {
@@ -12,6 +12,8 @@ export default function BlogDetails() {
     const { user } = useAuth();
 
     const isOwner = user?.uid === blog?.authorId;
+
+    const navigate = useNavigate();
 
     useEffect(() => {
 
@@ -45,6 +47,21 @@ export default function BlogDetails() {
         );
     }
 
+    const handleDelete = async () => {
+
+        const confirmed = window.confirm(
+            "Are you sure you want to delete this Blog?"
+        )
+
+        if (!confirmed) return;
+
+        try {
+            await deleteBlog(blog.id)
+            navigate("/blogs");
+        } catch (error) {
+            console.error(error)
+        }
+    };
 
     return (
 
@@ -75,11 +92,18 @@ export default function BlogDetails() {
                 <div className="mt-8 flex gap-4">
                     <Link
                         to={`/blogs/edit/${blog.id}`}
-                        
+
                         className="rounded bg-blue-600 px-5 py-2 text-white transition hover:bg-blue-700"
                     >
                         Edit
                     </Link>
+
+                    <button
+                        className="rounded bg-red-600 px-5 py-2 text-white transition hover:bg-red-700"
+                        onClick={handleDelete}
+                    >
+                        Delete
+                    </button>
                 </div>
             )}
 
