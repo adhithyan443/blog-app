@@ -1,13 +1,14 @@
 import { Outlet } from "react-router-dom";
-import Navbar from "./NavBar";
+import Sidebar from "./Sidebar";
 
 export default function Layout() {
     return (
-        <>
-            <Navbar />
-            <main className="mx-auto max-w-7xl px-6 py-8">
+        <div className="flex h-screen bg-gray-100">
+            <Sidebar />
+
+            <main className="flex-1 overflow-y-auto p-10">
                 <Outlet />
             </main>
-        </>
-    )
+        </div>
+    );
 }

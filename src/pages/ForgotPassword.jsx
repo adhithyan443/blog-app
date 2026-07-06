@@ -1,35 +1,29 @@
 import { useState } from "react";
-import { useAuth } from "../hooks/useAuth";
-import { Link, useNavigate } from "react-router-dom";
-import { PenSquare } from "lucide-react";
+import { Link } from "react-router-dom";
+import { PenSquare, ArrowLeft } from "lucide-react";
+import { sendPasswordResetEmail } from "firebase/auth";
 import toast from "react-hot-toast";
-import { validateLogin } from "../utils/authValidation";
 
-export default function Login() {
+import { auth } from "../firebase/config";
+
+export default function ForgotPassword() {
     const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
-
-    const { login: loginUser } = useAuth();
-    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const error = validateLogin(email, password);
-
-        if (error) {
-            toast.error(error);
+        if (!email.trim()) {
+            toast.error("Please enter your email.");
             return;
         }
 
-        setLoading(true);
-
         try {
-            await loginUser(email, password);
+            setLoading(true);
 
-            toast.success("Login successful 🎉");
-            navigate("/blogs");
+            await sendPasswordResetEmail(auth, email);
+
+            toast.success("Password reset email sent 📧");
         } catch (error) {
             toast.error(error.message);
         } finally {
@@ -43,26 +37,29 @@ export default function Login() {
 
                 {/* Header */}
                 <div className="bg-violet-600 px-8 py-8 text-center text-white">
+
                     <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-white/20">
                         <PenSquare size={30} />
                     </div>
 
                     <h1 className="text-3xl font-bold">
-                        Welcome Back
+                        Forgot Password?
                     </h1>
 
                     <p className="mt-2 text-sm text-violet-100">
-                        Sign in to continue your blogging journey.
+                        Enter your email and we'll send you a password reset link.
                     </p>
+
                 </div>
 
                 {/* Form */}
                 <div className="p-8">
+
                     <form
                         onSubmit={handleSubmit}
                         className="space-y-5"
                     >
-                        {/* Email */}
+
                         <div>
                             <label
                                 htmlFor="email"
@@ -74,8 +71,8 @@ export default function Login() {
                             <input
                                 id="email"
                                 type="email"
-                                autoComplete="email"
                                 required
+                                autoComplete="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 placeholder="Enter your email"
@@ -83,57 +80,32 @@ export default function Login() {
                             />
                         </div>
 
-                        {/* Password */}
-                        <div>
-                            <div className="mb-2 flex items-center justify-between">
-                                <label
-                                    htmlFor="password"
-                                    className="text-sm font-semibold text-gray-700"
-                                >
-                                    Password
-                                </label>
-
-                                <Link
-                                    to="/forgot-password"
-                                    className="text-sm font-medium text-violet-600 hover:underline"
-                                >
-                                    Forgot Password?
-                                </Link>
-                            </div>
-
-                            <input
-                                id="password"
-                                type="password"
-                                autoComplete="current-password"
-                                required
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                placeholder="Enter your password"
-                                className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none transition focus:border-violet-500 focus:ring-2 focus:ring-violet-200"
-                            />
-                        </div>
-
-                        {/* Login Button */}
                         <button
                             type="submit"
                             disabled={loading}
                             className="w-full rounded-xl bg-violet-600 py-3 font-semibold text-white transition hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-60"
                         >
-                            {loading ? "Signing In..." : "Sign In"}
+                            {loading
+                                ? "Sending..."
+                                : "Send Reset Link"}
                         </button>
+
                     </form>
 
-                    {/* Footer */}
-                    <div className="mt-8 text-center text-sm text-gray-600">
-                        Don't have an account?{" "}
+                    <div className="mt-6 text-center">
+
                         <Link
-                            to="/register"
-                            className="font-semibold text-violet-600 hover:underline"
+                            to="/login"
+                            className="inline-flex items-center gap-2 text-sm font-medium text-violet-600 hover:underline"
                         >
-                            Create Account
+                            <ArrowLeft size={16} />
+                            Back to Login
                         </Link>
+
                     </div>
+
                 </div>
+
             </div>
         </div>
     );

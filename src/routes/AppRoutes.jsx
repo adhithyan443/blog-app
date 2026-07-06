@@ -7,6 +7,8 @@ import Register from "../pages/Register";
 import NotFound from "../pages/NotFound";
 import ProtectedRoute from "./ProtectedRoute";
 import Layout from "../components/layout/Layout";
+import MyBlogs from "../pages/MyBlogs";
+import ForgotPassword from "../pages/ForgotPassword";
 
 export default function AppRoutes() {
     return (
@@ -18,7 +20,11 @@ export default function AppRoutes() {
             {/*Public routes*/}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-
+            <Route
+                path="/forgot-password"
+                element={<ForgotPassword />}
+            />
+            
 
             {/*Protected routes*/}
 
@@ -35,9 +41,11 @@ export default function AppRoutes() {
                     element={<BlogForm />} />
 
                 <Route path="/blog/:id" element={<BlogDetails />} />
+                <Route path="/my-blogs" element={<MyBlogs />} />
+
 
             </Route>
-            
+
             <Route path="*" element={<NotFound />} />
 
         </Routes>

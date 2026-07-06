@@ -8,7 +8,8 @@ import {
     orderBy,  //We want the newest blogs first.
     query,  //Allows us to customize what we fetch.
     serverTimestamp,
-    updateDoc
+    updateDoc,
+    where
 } from "firebase/firestore";
 
 import { db } from "../firebase/config";
@@ -64,8 +65,24 @@ export const updateBlog = async (id, updatedBlog) => {
 }
 
 
-export const deleteBlog = async (id) =>{
-    const docRef = doc(db,"blogs" ,id);
+export const deleteBlog = async (id) => {
+    const docRef = doc(db, "blogs", id);
 
     await deleteDoc(docRef);
+};
+
+export const getMyBlogs = async (userId) => {
+    const blogRef = collection(db, "blogs");
+
+    const q = query(
+        blogRef,
+        where("authorId", "==", userId)
+    );
+
+    const snapshot = await getDocs(q);
+
+    return snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+    }));
 };
